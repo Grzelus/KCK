@@ -39,6 +39,26 @@ def plot_color_gradients(gradients, names):
 
     fig.savefig('my-gradients.pdf')
 
+def linear_interpolation(x1, x2, v):
+    return x1 + v * (x2 - x1)
+
+def linear_interpolation_color(colour_1, colour_2, v):
+    r = linear_interpolation(colour_1[0], colour_2[0], v)
+    g = linear_interpolation(colour_1[1], colour_2[1], v)
+    b = linear_interpolation(colour_1[2], colour_2[2], v)
+    return(r,g,b)
+
+def gradient(colours, v):
+ 
+    num_of_transition = len(colours)-1
+    index = min(int(np.floor(v*num_of_transition)), num_of_transition -1)
+    t = v * num_of_transition - index
+
+    colour_1 = colours[index]
+    colour_2 = colours[index+1]
+
+    return linear_interpolation_color(colour_1, colour_2, t)
+
 def hsv2rgb(h, s, v):
     if s == 0.0:
         return (v, v, v)
@@ -71,71 +91,47 @@ def gradient_rgb_bw(v):
 
 
 def gradient_rgb_gbr(v):
-    #(0,1,0) -> (0,0,1)
-    if v < 0.5:
-        t = v*2
-        return (0, 1-t, t)
-    #(0,0,1) -> (1,0,0)    
-    else:
-        t = 2*(1-v)
-        return(1-t,0,t)
-
+    colours = [
+        (0,1,0),
+        (0,0,1),
+        (1,0,0)
+    ]
+    return gradient(colours, v)
 
 
 def gradient_rgb_gbr_full(v):
-        #(0,1,0) -> (0,1,1)
-    if v < 1/4:
-        t = v * 4
-        return (0, 1, t)
-        #(0,1,1) -> (0,0,1)
-    elif v < 1/2:
-        t = 4*(v - 0.25)
-        return(0,1-t,1)
-        #(0,0,1) -> (1,0,1)
-    elif v < 3/4:
-        t = 4*(v - 0.5)
-        return (t, 0, 1)
-        #(1,0,1) -> (1,0,0)
-    else:
-        t = 4*(v-0.75)
-        return(1,0,1-t)
+    colours = [
+        (0,1,0), 
+        (0,1,1),
+        (0,0,1),
+        (1,0,1),
+        (1,0,0),
+    ]
+    return gradient(colours, v)
 
     
 
-
-
 def gradient_rgb_wb_custom(v):
     colours = [
-        (1.0, 1.0, 1.0), # White
-        (1.0, 0.0, 0.0), # Red
-        (1.0, 0.0, 1.0), # Magenta
-        (0.0, 0.0, 1.0), # Blue
-        (0.0, 1.0, 1.0), # Cyan
-        (0.0, 1.0, 0.0), # Green
-        (1.0, 1.0, 0.0), # Yellow
-        (0.0, 0.0, 0.0)  # Black
-    ]
- 
-    num_of_transition = len(colours)-1
-    index = min(int(np.floor(v*num_of_transition)), num_of_transition -1)
-    t = v * num_of_transition - index
-
-    colour_1 = colours[index]
-    colour_2 = colours[index+1]
-
-    r = colour_1[0] + t * (colour_2[0] - colour_1[0])
-    g = colour_1[1] + t * (colour_2[1] - colour_1[1])
-    b = colour_1[2] + t * (colour_2[2] - colour_1[2])
-
-    return (r, g, b)
+    (1.0, 1.0, 1.0), # White
+    (1.0, 0.0, 0.0), # Red
+    (1.0, 0.0, 1.0), # Magenta
+    (0.0, 0.0, 1.0), # Blue
+    (0.0, 1.0, 1.0), # Cyan
+    (0.0, 1.0, 0.0), # Green
+    (1.0, 1.0, 0.0), # Yellow
+    (0.0, 0.0, 0.0)  # Black
+]
+    return gradient(colours, v)
 
 
 def gradient_hsv_bw(v):
+    #saturation set to 0 -> range black to white
     return hsv2rgb(90, 0, v)
 
 
 def gradient_hsv_gbr(v):
-    #pozycja początkowa dla koloru zielonego: 120; przechodzę przez 2/3 całego koła kolorów
+    #initial value for green: 120; going through 2/3 of the color circle
     t = (720/3 * v) + 120
     return hsv2rgb(t, 1, 1)
 
