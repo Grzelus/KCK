@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-        # Division in Python 2.7
+
 import matplotlib
 matplotlib.use('Agg')                       # So that we can render files without GUI
 import matplotlib.pyplot as plt
@@ -73,17 +72,17 @@ def hsv2rgb(h, s, v):
     t = v * (1.0 - (s * (1.0 - color_fraction)))
     q = v * (1.0 - s * color_fraction)
 
-    if base_color == 0: #(1,0,0)
+    if base_color == 0:     #(1,0,0) => (1,1,0)
         return(v,t,p)
-    elif base_color == 1: #(1,1,0)
+    elif base_color == 1:   #(1,1,0) => (0,1,0)
         return(q,v,p)
-    elif base_color == 2:#(0,1,0)
+    elif base_color == 2:   #(0,1,0) => (0,1,1)
         return(p,v,t)
-    elif base_color == 3:#(0,1,1)
+    elif base_color == 3:   #(0,1,1) => (0,0,1)
         return(p,q,v)
-    elif base_color == 4:#(0,0,1)
+    elif base_color == 4:   #(0,0,1) => (1,0,1)
         return (t,p,v)
-    else:#(1,0,1)
+    else:                   #(1,0,1) => (1,0,0)
         return (v,p,q)
 
 def gradient_rgb_bw(v):
@@ -92,21 +91,21 @@ def gradient_rgb_bw(v):
 
 def gradient_rgb_gbr(v):
     colours = [
-        (0,1,0),
-        (0,0,1),
-        (1,0,0)
+        (0,1,0),  # Green
+        (0,0,1),  # Blue
+        (1,0,0)   # Red
     ]
     return gradient(colours, v)
 
 
 def gradient_rgb_gbr_full(v):
     colours = [
-        (0,1,0), 
-        (0,1,1),
-        (0,0,1),
-        (1,0,1),
-        (1,0,0),
-    ]
+        (0, 1, 0),  # Green
+        (0, 1, 1),  # Cyan
+        (0, 0, 1),  # Blue
+        (1, 0, 1),  # Magenta
+        (1, 0, 0),  # Red
+    ]  
     return gradient(colours, v)
 
     
@@ -136,11 +135,13 @@ def gradient_hsv_gbr(v):
     return hsv2rgb(t, 1, 1)
 
 def gradient_hsv_unknown(v):
+    #initial value for green: 120; going back to red(0)
     t = 120 - 120*v
 
     return hsv2rgb(t, 0.4, 1)
 
 
+#this gradient should look like box of crayons
 def gradient_hsv_custom(v):
     number_of_segments = 24
     index = int(np.floor(number_of_segments * v))
