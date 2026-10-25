@@ -47,7 +47,7 @@ def linear_interpolation_color(colour_1, colour_2, v):
     b = linear_interpolation(colour_1[2], colour_2[2], v)
     return(r,g,b)
 
-def gradient(colours, v):
+def gradient(colours: list[tuple[float,float,float]], v):
  
     num_of_transition = len(colours)-1
     index = min(int(np.floor(v*num_of_transition)), num_of_transition -1)
@@ -58,7 +58,7 @@ def gradient(colours, v):
 
     return linear_interpolation_color(colour_1, colour_2, t)
 
-def hsv2rgb(h, s, v):
+def hsv2rgb(h: float, s: float, v: float):
     if s == 0.0:
         return (v, v, v)
 
@@ -85,11 +85,11 @@ def hsv2rgb(h, s, v):
     else:                   #(1,0,1) => (1,0,0)
         return (v,p,q)
 
-def gradient_rgb_bw(v):
+def gradient_rgb_bw(v: float):
     return (v, v, v)
 
 
-def gradient_rgb_gbr(v):
+def gradient_rgb_gbr(v: float):
     colours = [
         (0,1,0),  # Green
         (0,0,1),  # Blue
@@ -98,7 +98,7 @@ def gradient_rgb_gbr(v):
     return gradient(colours, v)
 
 
-def gradient_rgb_gbr_full(v):
+def gradient_rgb_gbr_full(v: float):
     colours = [
         (0, 1, 0),  # Green
         (0, 1, 1),  # Cyan
@@ -110,7 +110,7 @@ def gradient_rgb_gbr_full(v):
 
     
 
-def gradient_rgb_wb_custom(v):
+def gradient_rgb_wb_custom(v: float):
     colours = [
     (1.0, 1.0, 1.0), # White
     (1.0, 0.0, 0.0), # Red
@@ -124,25 +124,32 @@ def gradient_rgb_wb_custom(v):
     return gradient(colours, v)
 
 
-def gradient_hsv_bw(v):
+def gradient_hsv_bw(v: float):
     #saturation set to 0 -> range black to white
     return hsv2rgb(90, 0, v)
 
 
-def gradient_hsv_gbr(v):
-    #initial value for green: 120; going through 2/3 of the color circle
-    t = (720/3 * v) + 120
-    return hsv2rgb(t, 1, 1)
+def gradient_hsv_gbr(v: float):
+    hsv_colours = [
+        (120,1,1), # Green
+        (240,1,1), # Blue
+        (360,1,1), # Red
+    ]
+    h, s, val = gradient(hsv_colours, v)
+    return hsv2rgb(h,s,val)
 
-def gradient_hsv_unknown(v):
-    #initial value for green: 120; going back to red(0)
-    t = 120 - 120*v
-
-    return hsv2rgb(t, 0.4, 1)
+def gradient_hsv_unknown(v: float):
+    hsv_colours = [
+        (120,0.4,1), # Green
+        (0,0.4,1), # Red
+    ]
+    h,s,val = gradient(hsv_colours, v)
+    #saturation set to 0.4
+    return hsv2rgb(h, s, val)
 
 
 #this gradient should look like box of crayons
-def gradient_hsv_custom(v):
+def gradient_hsv_custom(v: float):
     number_of_segments = 24
     index = int(np.floor(number_of_segments * v))
     s = v*number_of_segments - index
