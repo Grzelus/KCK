@@ -12,9 +12,11 @@ def paint_map_adv(raw_matrix, norm_matrix, x, y, distance, sun_vec):
     hue, s, v = gradient(colors, value)
     
     if x < raw_matrix.shape[1] - 1 and y < raw_matrix.shape[0] - 1:
+        #checking difference between neighbours
         dz_dx = raw_matrix[y, x+1] - raw_matrix[y, x]
         dz_dy = raw_matrix[y+1, x] - raw_matrix[y, x] 
 
+        #creating reflecting vector
         vector = np.array([-dz_dx, -dz_dy, distance])
         vector = vector / np.linalg.norm(vector)
 
